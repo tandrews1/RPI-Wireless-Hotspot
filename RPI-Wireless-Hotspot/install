@@ -176,6 +176,24 @@ echo "Initialising DHCP server"
 service udhcpd start
 update-rc.d udhcpd enable
 
+echo "Installing Tor"
+sudo apt install tor
+# create log files
+sudo touch /var/log/tor/notices.log
+sudo chown debian-tor /var/log/tor/notices.log && sudo chmod 644 /var/log/tor/notices.log
+# create torrc 
+sudo cp ./config-files/torrc /etc/tor/torrc
+sudo service tor start
+# start at boot
+sudo update-rc.d tor enable
+
+echo "Refreshing network"
+sudo systemctl unmask hostapd
+sudo systemctl enable hostapd
+sudo systemctl start hostapd
+sudo /etc/init.d/networking restart
+
+
 
 echo "================================================================"
 echo "=================== Configuration complete! ===================="
